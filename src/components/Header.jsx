@@ -23,9 +23,9 @@ export default function Header({searchRecipes}) {
     return (
         <div className='flex justify-center gap-6 h-80 w-3/4 font-bold'>
             <div className='h-full w-full lg:w-2/5'>
-                <h1 className='text-5xl text-green-400'>Look for <span className='text-yellow-400'>BANGER</span> Food</h1>
+                <h1 className='text-5xl text-green-400'>Look for <span className='text-yellow-400'>THE BEST</span> Food</h1>
 
-                <p className='mt-4 text-justify'>Look for oportunities to take your time and pick our delicious, one must say, Banger food recipes to make your life even more colorful!</p>
+                <p className='mt-4 text-justify'>Look for oportunities to take your time and pick our delicious the best food recipes! Enjoy!</p>
 
                 <div className='flex mt-12 gap-4'>
                     <input onChange={handleInputChange} value={searchTerm} type="text" placeholder='Find a recipe...' className='border rounded-xl p-1 focus:outline-yellow-400 shadow-md' />
