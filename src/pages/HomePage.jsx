@@ -1,30 +1,60 @@
-import Header              from '../components/Header';
-import CardList            from '../components/CardList';
-import LoadingIcon         from '../components/LoadingIcon';
-import { useEffect }       from 'react';
-import useFetchRecipes     from '../hooks/useFetchRecipes';
-import { useSearchParams } from 'react-router-dom';
+import Header from "../components/Header";
+import CardList from "../components/CardList";
+import LoadingIcon from "../components/LoadingIcon";
+import { useEffect, useState } from "react";
+import useFetchRecipes from "../hooks/useFetchRecipes";
+import useUserLocation from "../hooks/useUserLocation";
+import { useSearchParams } from "react-router-dom";
+import VPNModal from "../modals/VPNModal";
 
 export default function HomePage() {
-  const [fetchRecipes, { data, loadingRecipes, loadingRecipesError }] = useFetchRecipes();
+  const [
+    fetchRecipes,
+    { data, loadingRecipes, loadingRecipesError },
+  ] = useFetchRecipes();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const {
+    fetchLocation,
+    location,
+    locationError,
+    loadingLocation,
+  } = useUserLocation();
+
   useEffect(() => {
-    fetchRecipes(searchParams.get('search'));
+    fetchLocation();
   }, []);
 
   const searchRecipes = (searchTerm) => {
     fetchRecipes(searchTerm);
-  }
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const closeModal = () => setIsOpen(false);
+  const openModal = () => setIsOpen(true);
+
+  useEffect(() => {
+    if (location.length > 0) {
+      fetchRecipes(location[0]);
+      openModal();
+    }
+  }, [location]);
 
   return (
     <>
-      {/* Header div */}
       <Header searchRecipes={searchRecipes} />
 
-      {/* Div for listing search content */}
-      {loadingRecipes && <LoadingIcon />}
-      {data && <CardList recipes={data} />}
+      {isOpen && location.length > 0 && (
+        <VPNModal
+          ipAddress={location[2]}
+          location={location[1]}
+          closeModal={closeModal}
+        />
+      )}
+      {(loadingRecipes || loadingLocation) && <LoadingIcon />}
+      {data && location && (
+        <CardList recipes={data} country={location[0]} />
+      )}
       {loadingRecipesError && <p>Ops... Something went wrong.</p>}
     </>
   );
